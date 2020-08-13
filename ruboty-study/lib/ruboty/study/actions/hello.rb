@@ -3,7 +3,7 @@ module Ruboty
     module Actions
       class Hello < Ruboty::Actions::Base
         def call
-          message.reply('TODO: write a message.')
+          message.reply('world!')
         end
       end
     end
