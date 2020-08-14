@@ -1,3 +1,4 @@
+require "ruboty"
 
 module Ruboty
   module Study
