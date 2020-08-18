@@ -22,4 +22,11 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'minitest'
   spec.add_development_dependency 'mocha'
+  spec.add_development_dependency 'minitest-reporters'
+  spec.add_development_dependency 'simplecov'
+  spec.add_development_dependency 'guard'
+  spec.add_development_dependency 'guard-minitest'
+  spec.add_development_dependency 'rb-fsevent'
+  spec.add_development_dependency 'terminal-notifier'
+  spec.add_development_dependency 'terminal-notifier-guard'
 end
