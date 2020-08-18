@@ -29,5 +29,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rb-fsevent'
   spec.add_development_dependency 'terminal-notifier'
   spec.add_development_dependency 'terminal-notifier-guard'
->>>>>>> 3e48dc3... [2-6] chore: bundle install minitest-reporters, simplecov, guard
 end
