@@ -1,6 +1,6 @@
 require "test_helper"
 
-class Ruboty::StudyTest < Minitest::Test
+class Ruboty::TestStudy < Minitest::Test
   def test_that_it_has_a_version_number
     refute_nil ::Ruboty::Study::VERSION
   end
