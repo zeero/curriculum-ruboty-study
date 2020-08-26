@@ -66,7 +66,7 @@ describe Ruboty::Study::Actions::RedmineTickets do
       mock_message.stubs(:[]).with(:user).returns(USER_ID)
 
       # テスト検証：モックでreplyの引数を検証
-      mock_message.expects(:reply).with("User ID: #{USER_ID} の担当チケット一覧\n```\n\n```")
+      mock_message.expects(:reply).with("User ID: #{USER_ID} の担当チケットはありません")
 
       # テスト実行
       subject.call

@@ -10,6 +10,7 @@ module Ruboty
           # Redmineから特定ユーザのチケット一覧を取得
           condition = { assigned_to_id: user_id }
           issues = ActiveResources::Redmine::Issue.where(condition)
+          return message.reply("User ID: #{user_id} の担当チケットはありません") if issues.empty?
 
           # 返信
           message.reply(format(user_id, issues))
