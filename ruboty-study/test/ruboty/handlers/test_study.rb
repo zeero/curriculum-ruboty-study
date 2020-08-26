@@ -9,7 +9,6 @@ describe Ruboty::Handlers::Study do
   } }
 
   describe '#hello()' do
-
     it '"hello"に反応する' do
       # テスト検証： `Ruboty::Study::Actions::Hello.new()` メソッドが呼び出されること
       Ruboty::Study::Actions::Hello
@@ -32,6 +31,44 @@ describe Ruboty::Handlers::Study do
 
       # テスト実行
       robot.receive(body: 'ruboty こんばんは', from: 'sender', to: 'channel')
+    end
+  end
+
+  describe '#redmine_tickets' do
+    it '"redmine tickets 1"に反応する' do
+      # テスト検証：Action.newの引数のmessageを取り出して、正規表現のマッチが正しいかを検証する
+      Ruboty::Study::Actions::RedmineTickets
+        .stubs(:new)
+        .with { |message|
+          expect(message[:user]).must_equal '1'
+        }
+        .returns(mock_action)
+
+      # テスト実行
+      robot.receive(body: 'ruboty redmine tickets 1', from: 'sender', to: 'channel')
+    end
+
+    it '"redmine tickets 22"に反応する' do
+      # テスト検証：Action.newの引数のmessageを取り出して、正規表現のマッチが正しいかを検証する
+      Ruboty::Study::Actions::RedmineTickets
+        .stubs(:new)
+        .with { |message|
+          expect(message[:user]).must_equal '22'
+        }
+        .returns(mock_action)
+
+      # テスト実行
+      robot.receive(body: 'ruboty redmine tickets 22', from: 'sender', to: 'channel')
+    end
+
+    it '"redmine tickets a"に反応しない' do
+      # テスト検証：Action.newをmock化して、呼ばれないことを検証
+      Ruboty::Study::Actions::RedmineTickets
+        .expects(:new)
+        .never
+
+      # テスト実行
+      robot.receive(body: 'ruboty redmine tickets a', from: 'sender', to: 'channel')
     end
   end
 end
