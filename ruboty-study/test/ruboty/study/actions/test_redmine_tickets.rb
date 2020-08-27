@@ -74,6 +74,21 @@ describe Ruboty::Study::Actions::RedmineTickets do
         subject.call
       end
     end
+
+    describe '該当するRedmine User IDが存在しない場合' do
+      it '' do
+        # テスト準備：HttpMockでネットワーク通信を偽装
+        ActiveResource::HttpMock.respond_to do |http|
+          http.get "/issues.xml?assigned_to_id=#{USER_ID}", HEADERS, [ISSUE_ID10].to_xml(root: 'issues')
+        end
+
+        # テスト準備：スタブでmessageに<user>を設定（上書き）
+        mock_message.stubs(:[]).with(:user).returns('@bar')
+
+        # テスト実行
+        subject.call
+      end
+    end
   end
 end
 
