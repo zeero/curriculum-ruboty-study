@@ -2,7 +2,7 @@ require "ruboty"
 
 module Ruboty
   module Study
-    # Your code goes here...
+    BRAIN_KEY_REDMINE_LINKS = 'redmine_links'
   end
 end
 
