@@ -37,7 +37,7 @@ describe Ruboty::Study::Actions::RedmineLink do
       expect(actual).must_equal expected
     end
 
-    it '複数件のリンク登録ができる' do
+    it '追加のリンク登録ができる' do
       # テスト準備：スタブでmessageに<slack_user_name>と<redmine_user_id>を設定
       mock_message.stubs(:[]).with(:slack_user_name).returns(SLACK_USER_NAME)
       mock_message.stubs(:[]).with(:redmine_user_id).returns(REDMINE_USER_ID)

@@ -6,8 +6,15 @@ require 'active_resource/http_mock'
 describe Ruboty::Study::Actions::RedmineTickets do
   subject { Ruboty::Study::Actions::RedmineTickets.new(mock_message) }
 
-  let(:mock_message) { mock }
+  let(:robot) { Ruboty::Robot.new }
+  let(:mock_message) {
+    mock.tap { |mock|
+      mock.stubs(:robot).returns(robot)
+      mock.stubs(:[]).with(:user).returns(SLACK_USER)
+    }
+  }
 
+  SLACK_USER = '@foo'
   USER_ID = '1'
   HEADERS = {
     'Accept' => 'application/xml',
@@ -17,6 +24,9 @@ describe Ruboty::Study::Actions::RedmineTickets do
   ISSUE_ID20 = JSON.parse(File.open('test/fixtures/issue_id20.json').read)
 
   before do
+    # テスト準備：brainにデータを設定
+    initial_data = { SLACK_USER => USER_ID }
+    mock_message.robot.brain.data[Ruboty::Study::BRAIN_KEY_REDMINE_LINKS] = initial_data
   end
 
   after do
@@ -29,9 +39,6 @@ describe Ruboty::Study::Actions::RedmineTickets do
       ActiveResource::HttpMock.respond_to do |http|
         http.get "/issues.xml?assigned_to_id=#{USER_ID}", HEADERS, [ISSUE_ID10].to_xml(root: 'issues')
       end
-
-      # テスト準備：スタブでmessageに<user>を設定
-      mock_message.stubs(:[]).with(:user).returns(USER_ID)
 
       # テスト検証：モックでreplyの引数を検証
       mock_message.expects(:reply).with("User ID: #{USER_ID} の担当チケット一覧\n```\n#10: チケットタイトル\n```")
@@ -46,9 +53,6 @@ describe Ruboty::Study::Actions::RedmineTickets do
         http.get "/issues.xml?assigned_to_id=#{USER_ID}", HEADERS, [ISSUE_ID10, ISSUE_ID20].to_xml(root: 'issues')
       end
 
-      # テスト準備：スタブでmessageに<user>を設定
-      mock_message.stubs(:[]).with(:user).returns(USER_ID)
-
       # テスト検証：モックでreplyの引数を検証
       mock_message.expects(:reply).with("User ID: #{USER_ID} の担当チケット一覧\n```\n#10: チケットタイトル\n#20: ２つ目のチケット\n```")
 
@@ -61,9 +65,6 @@ describe Ruboty::Study::Actions::RedmineTickets do
       ActiveResource::HttpMock.respond_to do |http|
         http.get "/issues.xml?assigned_to_id=#{USER_ID}", HEADERS
       end
-
-      # テスト準備：スタブでmessageに<user>を設定
-      mock_message.stubs(:[]).with(:user).returns(USER_ID)
 
       # テスト検証：モックでreplyの引数を検証
       mock_message.expects(:reply).with("User ID: #{USER_ID} の担当チケットはありません")
