@@ -76,14 +76,13 @@ describe Ruboty::Study::Actions::RedmineTickets do
     end
 
     describe '該当するRedmine User IDが存在しない場合' do
-      it '' do
-        # テスト準備：HttpMockでネットワーク通信を偽装
-        ActiveResource::HttpMock.respond_to do |http|
-          http.get "/issues.xml?assigned_to_id=#{USER_ID}", HEADERS, [ISSUE_ID10].to_xml(root: 'issues')
-        end
-
+      it '該当IDが存在しないメッセージを返す' do
         # テスト準備：スタブでmessageに<user>を設定（上書き）
-        mock_message.stubs(:[]).with(:user).returns('@bar')
+        slack_user = '@bar'
+        mock_message.stubs(:[]).with(:user).returns(slack_user)
+
+        # テスト検証：モックでreplyの引数を検証
+        mock_message.expects(:reply).with("RedmineユーザIDが見つかりません\n`redmine link #{slack_user} ${redmine_user_id}`を実行してください")
 
         # テスト実行
         subject.call
