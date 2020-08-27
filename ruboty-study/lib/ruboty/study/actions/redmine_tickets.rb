@@ -10,6 +10,7 @@ module Ruboty
           # Slackユーザ名からRedmineユーザIDを取得
           links = message.robot.brain.data[BRAIN_KEY_REDMINE_LINKS] || {}
           user_id = links[slack_user]
+          return message.reply("RedmineユーザIDが見つかりません\n`redmine link #{slack_user} ${redmine_user_id}`を実行してください") unless user_id
 
           # Redmineから特定ユーザのチケット一覧を取得
           condition = { assigned_to_id: user_id }
