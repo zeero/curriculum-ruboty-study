@@ -34,43 +34,45 @@ describe Ruboty::Study::Actions::RedmineTickets do
   end
 
   describe '#call' do
-    it '担当チケット一覧（チケット１つ）を返す' do
-      # テスト準備：HttpMockでネットワーク通信を偽装
-      ActiveResource::HttpMock.respond_to do |http|
-        http.get "/issues.xml?assigned_to_id=#{USER_ID}", HEADERS, [ISSUE_ID10].to_xml(root: 'issues')
+    describe '該当するRedmine User IDが存在する場合' do
+      it '担当チケット一覧（チケット１つ）を返す' do
+        # テスト準備：HttpMockでネットワーク通信を偽装
+        ActiveResource::HttpMock.respond_to do |http|
+          http.get "/issues.xml?assigned_to_id=#{USER_ID}", HEADERS, [ISSUE_ID10].to_xml(root: 'issues')
+        end
+
+        # テスト検証：モックでreplyの引数を検証
+        mock_message.expects(:reply).with("User ID: #{USER_ID} の担当チケット一覧\n```\n#10: チケットタイトル\n```")
+
+        # テスト実行
+        subject.call
       end
 
-      # テスト検証：モックでreplyの引数を検証
-      mock_message.expects(:reply).with("User ID: #{USER_ID} の担当チケット一覧\n```\n#10: チケットタイトル\n```")
+      it '担当チケット一覧（チケット複数）を返す' do
+        # テスト準備：HttpMockでネットワーク通信を偽装
+        ActiveResource::HttpMock.respond_to do |http|
+          http.get "/issues.xml?assigned_to_id=#{USER_ID}", HEADERS, [ISSUE_ID10, ISSUE_ID20].to_xml(root: 'issues')
+        end
 
-      # テスト実行
-      subject.call
-    end
+        # テスト検証：モックでreplyの引数を検証
+        mock_message.expects(:reply).with("User ID: #{USER_ID} の担当チケット一覧\n```\n#10: チケットタイトル\n#20: ２つ目のチケット\n```")
 
-    it '担当チケット一覧（チケット複数）を返す' do
-      # テスト準備：HttpMockでネットワーク通信を偽装
-      ActiveResource::HttpMock.respond_to do |http|
-        http.get "/issues.xml?assigned_to_id=#{USER_ID}", HEADERS, [ISSUE_ID10, ISSUE_ID20].to_xml(root: 'issues')
+        # テスト実行
+        subject.call
       end
 
-      # テスト検証：モックでreplyの引数を検証
-      mock_message.expects(:reply).with("User ID: #{USER_ID} の担当チケット一覧\n```\n#10: チケットタイトル\n#20: ２つ目のチケット\n```")
+      it '担当チケット一覧（チケットなし）を返す' do
+        # テスト準備：HttpMockでネットワーク通信を偽装
+        ActiveResource::HttpMock.respond_to do |http|
+          http.get "/issues.xml?assigned_to_id=#{USER_ID}", HEADERS
+        end
 
-      # テスト実行
-      subject.call
-    end
+        # テスト検証：モックでreplyの引数を検証
+        mock_message.expects(:reply).with("User ID: #{USER_ID} の担当チケットはありません")
 
-    it '担当チケット一覧（チケットなし）を返す' do
-      # テスト準備：HttpMockでネットワーク通信を偽装
-      ActiveResource::HttpMock.respond_to do |http|
-        http.get "/issues.xml?assigned_to_id=#{USER_ID}", HEADERS
+        # テスト実行
+        subject.call
       end
-
-      # テスト検証：モックでreplyの引数を検証
-      mock_message.expects(:reply).with("User ID: #{USER_ID} の担当チケットはありません")
-
-      # テスト実行
-      subject.call
     end
   end
 end
