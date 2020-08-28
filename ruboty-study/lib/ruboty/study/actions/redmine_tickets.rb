@@ -5,7 +5,11 @@ module Ruboty
     module Actions
       class RedmineTickets < Ruboty::Actions::Base
         def call
-          user_id = message[:user]
+          slack_user = message[:user]
+
+          # Slackユーザ名からRedmineユーザIDを取得
+          links = message.robot.brain.data[BRAIN_KEY_REDMINE_LINKS] || {}
+          user_id = links[slack_user]
 
           # Redmineから特定ユーザのチケット一覧を取得
           condition = { assigned_to_id: user_id }
