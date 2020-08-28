@@ -71,5 +71,31 @@ describe Ruboty::Handlers::Study do
       robot.receive(body: 'ruboty redmine tickets a', from: 'sender', to: 'channel')
     end
   end
+
+  describe '#redmine_link' do
+    it '"redmine link @Foo3 11"に反応する' do
+      # テスト検証：Action.newの引数のmessageを取り出して、正規表現のマッチが正しいかを検証する
+      Ruboty::Study::Actions::RedmineLink
+        .stubs(:new)
+        .with { |message|
+          expect(message[:slack_user_name]).must_equal '@Foo3'
+          expect(message[:redmine_user_id]).must_equal '11'
+        }
+        .returns(mock_action_called_once)
+
+      # テスト実行
+      robot.receive(body: 'ruboty redmine link @Foo3 11', from: 'sender', to: 'channel')
+    end
+
+    it '"redmine link @ 11"に反応しない' do
+      # テスト検証：Action.newをmock化して、呼ばれないことを検証
+      Ruboty::Study::Actions::RedmineLink
+        .expects(:new)
+        .never
+
+      # テスト実行
+      robot.receive(body: 'ruboty redmine link @ 11', from: 'sender', to: 'channel')
+    end
+  end
 end
 
