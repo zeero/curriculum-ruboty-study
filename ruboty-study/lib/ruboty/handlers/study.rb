@@ -5,7 +5,7 @@ module Ruboty
     class Study < Base
       on(/(?<hello>hello|こんにちは|hola|bonjour)/, name: 'hello', description: 'helloと言ったら、world!を返す（英日西仏対応版）')
 
-      on(/redmine +tickets +(?<user>[0-9]+)/, name: 'redmine_tickets', description: 'Redmineの担当チケット一覧を返す')
+      on(/redmine +tickets +(?<user>@\S+)/, name: 'redmine_tickets', description: 'Redmineの担当チケット一覧を返す')
 
       on(/redmine +link +(?<slack_user_name>@\S+) +(?<redmine_user_id>[0-9]+)/i, name: 'redmine_link', description: 'Slackユーザ名とRedmineユーザIDをリンクする')
 

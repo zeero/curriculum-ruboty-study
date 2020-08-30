@@ -35,30 +35,17 @@ describe Ruboty::Handlers::Study do
   end
 
   describe '#redmine_tickets' do
-    it '"redmine tickets 1"に反応する' do
+    it '"redmine tickets @foo"に反応する' do
       # テスト検証：Action.newの引数のmessageを取り出して、正規表現のマッチが正しいかを検証する
       Ruboty::Study::Actions::RedmineTickets
         .stubs(:new)
         .with { |message|
-          expect(message[:user]).must_equal '1'
+          expect(message[:user]).must_equal '@foo'
         }
         .returns(mock_action)
 
       # テスト実行
-      robot.receive(body: 'ruboty redmine tickets 1', from: 'sender', to: 'channel')
-    end
-
-    it '"redmine tickets 22"に反応する' do
-      # テスト検証：Action.newの引数のmessageを取り出して、正規表現のマッチが正しいかを検証する
-      Ruboty::Study::Actions::RedmineTickets
-        .stubs(:new)
-        .with { |message|
-          expect(message[:user]).must_equal '22'
-        }
-        .returns(mock_action)
-
-      # テスト実行
-      robot.receive(body: 'ruboty redmine tickets 22', from: 'sender', to: 'channel')
+      robot.receive(body: 'ruboty redmine tickets @foo', from: 'sender', to: 'channel')
     end
 
     it '"redmine tickets a"に反応しない' do
@@ -69,6 +56,16 @@ describe Ruboty::Handlers::Study do
 
       # テスト実行
       robot.receive(body: 'ruboty redmine tickets a', from: 'sender', to: 'channel')
+    end
+
+    it '"redmine tickets 1"に反応しない' do
+      # テスト検証：Action.newをmock化して、呼ばれないことを検証
+      Ruboty::Study::Actions::RedmineTickets
+        .expects(:new)
+        .never
+
+      # テスト実行
+      robot.receive(body: 'ruboty redmine tickets 1', from: 'sender', to: 'channel')
     end
   end
 
@@ -81,7 +78,7 @@ describe Ruboty::Handlers::Study do
           expect(message[:slack_user_name]).must_equal '@Foo3'
           expect(message[:redmine_user_id]).must_equal '11'
         }
-        .returns(mock_action_called_once)
+        .returns(mock_action)
 
       # テスト実行
       robot.receive(body: 'ruboty redmine link @Foo3 11', from: 'sender', to: 'channel')
